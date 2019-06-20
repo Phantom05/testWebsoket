@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Native WebSocket Example</title>
+
+</head>
+
+<body>
+
+  <button id="hello">Hello</button>
+  <script>
+    // 웹소켓 전역 객체 생성
+    var ws = new WebSocket("ws://localhost:3000");
+
+    // 연결이 수립되면 서버에 메시지를 전송한다
+    ws.onopen = function (event) {
+      ws.send("Client message: Hi!");
+
+      document.getElementById('hello').addEventListener('click', function (e) {
+        let testJson = {
+          hello: "world"
+        };
+        ws.send(JSON.stringify(testJson))
+      })
+
+
+      new QWebChannel(yourTransport, function (channel) {
+
+        // Connect to a signal:
+        channel.objects.foo.mySignal.connect(function () {
+          // This callback will be invoked whenever the signal is emitted on the C++/QML side.
+          console.log(arguments);
+        });
+
+        // To make the object known globally, assign it to the window object, i.e.:
+        window.foo = channel.objects.foo;
+
+        // Invoke a method:
+        foo.myMethod(arg1, arg2, function (returnValue) {
+          // This callback will be invoked when myMethod has a return value. Keep in mind that
+          // the communication is asynchronous, hence the need for this callback.
+          console.log(returnValue);
+        });
+
+        // Read a property value, which is cached on the client side:
+        console.log(foo.myProperty);
+
+        // Writing a property will instantly update the client side cache.
+        // The remote end will be notified about the change asynchronously
+        foo.myProperty = "Hello World!";
+
+        // To get notified about remote property changes,
+        // simply connect to the corresponding notify signal:
+        foo.onMyPropertyChanged.connect(function (newValue) {
+          console.log(newValue);
+        });
+
+        // One can also access enums that are marked with Q_ENUM:
+        console.log(foo.MyEnum.MyEnumerator);
+      });
+    }
+
+    // 서버로 부터 메시지를 수신한다
+    ws.onmessage = function (event) {
+      console.log("Server message: ", event.data);
+    }
+
+    // error event handler
+    ws.onerror = function (event) {
+      console.log("Server error message: ", event.data);
+    }
+  </script>
+</body>
+
+</html>
